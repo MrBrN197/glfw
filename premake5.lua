@@ -2,6 +2,7 @@
 project "GLFW"
     kind "StaticLib"
     language "C"
+    staticruntime "on"
 
     targetdir("bin/" .. outputdir .. "/%{prj.name}")
     objdir("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -18,10 +19,12 @@ project "GLFW"
         "src/window.c"
     }
 
+    defines{
+        "_CRT_SECURE_NO_WARNINGS"
+
+    }
 
     filter "system:windows"
-        buildoptions {"-std=c11", "-lgdi32"}
-        staticruntime "On"
         systemversion "latest"
 
         files{
@@ -38,8 +41,13 @@ project "GLFW"
 
         defines {
             "_GLFW_WIN32",
-            "_CRT_SECURE_WARNINGS"
         }
 
-    filter {"system:windows", "configurations:release"}
-        buildoptions "/MT"
+    filter "configurations:Debug"
+		defines "HZ_DEBUG"
+		runtime "Debug"
+		symbols "on"
+	filter "configurations:Release"
+		defines "HZ_RELEASE"
+		runtime "Release"
+		optimize "on"
